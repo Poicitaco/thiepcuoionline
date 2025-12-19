@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Quản trị thiệp cưới</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+<!-- Login Screen -->
+<div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+        <div class="text-center mb-8">
+            <span class="material-symbols-outlined text-rose-500 text-5xl mb-4">favorite</span>
+            <h1 class="text-2xl font-bold text-gray-800">Admin Panel</h1>
+            <p class="text-gray-500 mt-2">Quản trị thiệp cưới</p>
+        </div>
+        <form id="login-form" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Mật khẩu</label>
+                <input type="password" id="admin-password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent" placeholder="Nhập mật khẩu admin">
+            </div>
+            <button type="submit" class="w-full bg-rose-500 text-white py-3 rounded-lg font-semibold hover:bg-rose-600 transition-colors">
+                Đăng nhập
+            </button>
+        </form>
+        <p class="text-xs text-gray-400 mt-4 text-center">Mật khẩu mặc định: <code class="bg-gray-100 px-2 py-1 rounded">wedding2025</code></p>
+    </div>
+</div>
+
+<!-- Admin Dashboard -->
+<div id="admin-dashboard" class="hidden min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-rose-500 text-3xl">favorite</span>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-800">Quản trị thiệp cưới</h1>
+                    <p class="text-sm text-gray-500">Đình Thi & Thanh Thảo</p>
+                </div>
+            </div>
+            <button onclick="logout()" class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <span class="material-symbols-outlined">logout</span>
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl p-6 shadow-sm border">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Lời chúc</p>
+                        <p class="text-2xl font-bold text-gray-800 mt-1" id="total-wishes">0</p>
+                    </div>
+                    <span class="material-symbols-outlined text-rose-500 text-4xl">mail</span>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl p-6 shadow-sm border">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Xác nhận tham dự</p>
+                        <p class="text-2xl font-bold text-gray-800 mt-1" id="total-rsvp">0</p>
+                    </div>
+                    <span class="material-symbols-outlined text-green-500 text-4xl">check_circle</span>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl p-6 shadow-sm border">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Bắn tim</p>
+                        <p class="text-2xl font-bold text-gray-800 mt-1" id="total-hearts">0</p>
+                    </div>
+                    <span class="material-symbols-outlined text-red-500 text-4xl">favorite</span>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl p-6 shadow-sm border">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500">Số khách</p>
+                        <p class="text-2xl font-bold text-gray-800 mt-1" id="total-guests">0</p>
+                    </div>
+                    <span class="material-symbols-outlined text-blue-500 text-4xl">group</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="mb-6 border-b">
+            <div class="flex gap-2 overflow-x-auto">
+                <button onclick="switchTab('wishes')" class="tab-btn active px-4 py-3 font-semibold border-b-2 border-rose-500 text-rose-500 whitespace-nowrap flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">mail</span>
+                    Lời chúc
+                </button>
+                <button onclick="switchTab('rsvp')" class="tab-btn px-4 py-3 font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">group</span>
+                    RSVP
+                </button>
+                <button onclick="switchTab('customize')" class="tab-btn px-4 py-3 font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">edit_note</span>
+                    Tùy chỉnh
+                </button>
+                <button onclick="switchTab('images')" class="tab-btn px-4 py-3 font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">photo_library</span>
+                    Ảnh
+                </button>
+                <button onclick="switchTab('invitations')" class="tab-btn px-4 py-3 font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">link</span>
+                    Thiệp mời
+                </button>
+                <button onclick="switchTab('settings')" class="tab-btn px-4 py-3 font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">settings</span>
+                    Cài đặt
+                </button>
+            </div>
+        </div>
+
+        <!-- Wishes Tab -->
+        <div id="wishes-tab" class="tab-content">
+            <div class="bg-white rounded-xl shadow-sm border">
+                <div class="p-6 border-b">
+                    <h2 class="text-lg font-semibold text-gray-800">Danh sách lời chúc</h2>
+                </div>
+                <div id="wishes-list" class="divide-y max-h-[600px] overflow-y-auto">
+                    <!-- Wishes will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- RSVP Tab -->
+        <div id="rsvp-tab" class="tab-content hidden">
+            <div class="bg-white rounded-xl shadow-sm border">
+                <div class="p-6 border-b">
+                    <h2 class="text-lg font-semibold text-gray-800">Danh sách khách mời</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tên</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Trạng thái</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Số người</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Thời gian</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rsvp-list" class="divide-y">
+                            <!-- RSVP will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customize Tab -->
+        <div id="customize-tab" class="tab-content hidden">
+            <div class="space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined">favorite</span>
+                        Thông tin cô dâu chú rể
+                    </h3>
+                    <form id="couple-info-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tên chú rể</label>
+                            <input type="text" id="edit-groom-name" class="w-full px-4 py-2 border rounded-lg" placeholder="Đình Thi">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tên cô dâu</label>
+                            <input type="text" id="edit-bride-name" class="w-full px-4 py-2 border rounded-lg" placeholder="Thanh Thảo">
+                        </div>
+                        <div class="md:col-span-2">
+                            <button type="submit" class="bg-rose-500 text-white px-6 py-2 rounded-lg hover:bg-rose-600">
+                                Lưu thay đổi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined">calendar_month</span>
+                        Thông tin sự kiện
+                    </h3>
+                    <form id="event-info-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Ngày cưới</label>
+                            <input type="date" id="edit-wedding-date" class="w-full px-4 py-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Giờ cưới</label>
+                            <input type="time" id="edit-wedding-time" class="w-full px-4 py-2 border rounded-lg">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Địa điểm</label>
+                            <input type="text" id="edit-venue" class="w-full px-4 py-2 border rounded-lg" placeholder="Luxury Palace, Hồ Chí Minh">
+                        </div>
+                        <div class="md:col-span-2">
+                            <button type="submit" class="bg-rose-500 text-white px-6 py-2 rounded-lg hover:bg-rose-600">
+                                Lưu thay đổi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined">account_balance</span>
+                        Tài khoản ngân hàng
+                    </h3>
+                    <form id="bank-info-form" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-4">
+                                <h4 class="font-semibold text-gray-700">Chú rể</h4>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Ngân hàng</label>
+                                    <input type="text" id="edit-groom-bank" class="w-full px-4 py-2 border rounded-lg" placeholder="Vietcombank">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Số tài khoản</label>
+                                    <input type="text" id="edit-groom-account" class="w-full px-4 py-2 border rounded-lg" placeholder="1234567890">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Tên tài khoản</label>
+                                    <input type="text" id="edit-groom-account-name" class="w-full px-4 py-2 border rounded-lg" placeholder="NGUYEN DINH THI">
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <h4 class="font-semibold text-gray-700">Cô dâu</h4>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Ngân hàng</label>
+                                    <input type="text" id="edit-bride-bank" class="w-full px-4 py-2 border rounded-lg" placeholder="MBBank">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Số tài khoản</label>
+                                    <input type="text" id="edit-bride-account" class="w-full px-4 py-2 border rounded-lg" placeholder="0987654321">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Tên tài khoản</label>
+                                    <input type="text" id="edit-bride-account-name" class="w-full px-4 py-2 border rounded-lg" placeholder="NGUYEN THANH THAO">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="bg-rose-500 text-white px-6 py-2 rounded-lg hover:bg-rose-600">
+                            Lưu thay đổi
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Images Tab -->
+        <div id="images-tab" class="tab-content hidden">
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Quản lý ảnh</h3>
+                <div class="space-y-6">
+                    <!-- Hero Background -->
+                    <div class="border rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-700 mb-3">Ảnh nền trang chủ</h4>
+                        <input type="file" id="upload-hero-bg" accept="image/*" class="hidden">
+                        <div class="flex items-center gap-4">
+                            <button onclick="document.getElementById('upload-hero-bg').click()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center gap-2">
+                                <span class="material-symbols-outlined">upload</span>
+                                Tải ảnh lên
+                            </button>
+                            <div id="preview-hero-bg" class="flex-1 h-32 bg-gray-100 rounded-lg overflow-hidden"></div>
+                        </div>
+                    </div>
+
+                    <!-- Gallery Images -->
+                    <div class="border rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-700 mb-3">Album ảnh cưới (6 ảnh)</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div class="space-y-2">
+                                <input type="file" id="upload-gallery-1" accept="image/*" class="hidden">
+                                <button onclick="document.getElementById('upload-gallery-1').click()" class="w-full h-32 bg-gray-100 rounded-lg hover:bg-gray-200 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-gray-400 text-4xl">add_photo_alternate</span>
+                                </button>
+                                <div id="preview-gallery-1" class="w-full h-32 bg-gray-100 rounded-lg overflow-hidden hidden"></div>
+                            </div>
+                            <div class="space-y-2">
+                                <input type="file" id="upload-gallery-2" accept="image/*" class="hidden">
+                                <button onclick="document.getElementById('upload-gallery-2').click()" class="w-full h-32 bg-gray-100 rounded-lg hover:bg-gray-200 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-gray-400 text-4xl">add_photo_alternate</span>
+                                </button>
+                                <div id="preview-gallery-2" class="w-full h-32 bg-gray-100 rounded-lg overflow-hidden hidden"></div>
+                            </div>
+                            <div class="space-y-2">
+                                <input type="file" id="upload-gallery-3" accept="image/*" class="hidden">
+                                <button onclick="document.getElementById('upload-gallery-3').click()" class="w-full h-32 bg-gray-100 rounded-lg hover:bg-gray-200 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-gray-400 text-4xl">add_photo_alternate</span>
+                                </button>
+                                <div id="preview-gallery-3" class="w-full h-32 bg-gray-100 rounded-lg overflow-hidden hidden"></div>
+                            </div>
+                            <div class="space-y-2">
+                                <input type="file" id="upload-gallery-4" accept="image/*" class="hidden">
+                                <button onclick="document.getElementById('upload-gallery-4').click()" class="w-full h-32 bg-gray-100 rounded-lg hover:bg-gray-200 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-gray-400 text-4xl">add_photo_alternate</span>
+                                </button>
+                                <div id="preview-gallery-4" class="w-full h-32 bg-gray-100 rounded-lg overflow-hidden hidden"></div>
+                            </div>
+                            <div class="space-y-2">
+                                <input type="file" id="upload-gallery-5" accept="image/*" class="hidden">
+                                <button onclick="document.getElementById('upload-gallery-5').click()" class="w-full h-32 bg-gray-100 rounded-lg hover:bg-gray-200 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-gray-400 text-4xl">add_photo_alternate</span>
+                                </button>
+                                <div id="preview-gallery-5" class="w-full h-32 bg-gray-100 rounded-lg overflow-hidden hidden"></div>
+                            </div>
+                            <div class="space-y-2">
+                                <input type="file" id="upload-gallery-6" accept="image/*" class="hidden">
+                                <button onclick="document.getElementById('upload-gallery-6').click()" class="w-full h-32 bg-gray-100 rounded-lg hover:bg-gray-200 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-gray-400 text-4xl">add_photo_alternate</span>
+                                </button>
+                                <div id="preview-gallery-6" class="w-full h-32 bg-gray-100 rounded-lg overflow-hidden hidden"></div>
+                            </div>
+                        </div>
+                        <button onclick="saveGalleryImages()" class="mt-4 bg-rose-500 text-white px-6 py-2 rounded-lg hover:bg-rose-600">
+                            Lưu album ảnh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invitations Tab -->
+        <div id="invitations-tab" class="tab-content hidden">
+            <div class="bg-white rounded-xl shadow-sm border p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Tạo link thiệp mời cá nhân</h3>
+                <p class="text-sm text-gray-600 mb-6">Tạo link thiệp mời có tên riêng cho từng khách mời. Ví dụ: <code class="bg-gray-100 px-2 py-1 rounded text-xs">?name=Đạt&title=Anh</code></p>
+                
+                <form id="invitation-form" class="mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Chức danh</label>
+                            <select id="guest-title-select" class="w-full px-4 py-2 border rounded-lg">
+                                <option value="Anh">Anh</option>
+                                <option value="Chị">Chị</option>
+                                <option value="Bác">Bác</option>
+                                <option value="Cô">Cô</option>
+                                <option value="Chú">Chú</option>
+                                <option value="Ông">Ông</option>
+                                <option value="Bà">Bà</option>
+                                <option value="Em">Em</option>
+                                <option value="Bạn">Bạn</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tên khách mời</label>
+                            <input type="text" id="guest-name-input" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập tên...">
+                        </div>
+                    </div>
+                    <button type="submit" class="bg-rose-500 text-white px-6 py-2 rounded-lg hover:bg-rose-600">
+                        Tạo link
+                    </button>
+                </form>
+
+                <div id="invitation-link-result" class="hidden">
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <p class="text-sm font-medium text-gray-700 mb-2">Link thiệp mời:</p>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="generated-link" readonly class="flex-1 px-4 py-2 bg-white border rounded-lg text-sm" value="">
+                            <button onclick="copyInvitationLink()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center gap-2">
+                                <span class="material-symbols-outlined">content_copy</span>
+                                Copy
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">Khi khách mở link này, thiệp sẽ hiển thị "Kính gửi: <span id="preview-greeting"></span>"</p>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="font-semibold text-gray-700 mb-3">Danh sách link đã tạo</h4>
+                    <div id="invitation-links-list" class="space-y-2">
+                        <!-- Links will be displayed here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings-tab" class="tab-content hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white rounded-xl shadow-sm border p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Đổi mật khẩu</h3>
+                    <form id="change-password-form" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Mật khẩu mới</label>
+                            <input type="password" id="new-password" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mật khẩu mới">
+                        </div>
+                        <button type="submit" class="w-full bg-rose-500 text-white py-2 rounded-lg hover:bg-rose-600">
+                            Cập nhật
+                        </button>
+                    </form>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Xuất dữ liệu</h3>
+                    <p class="text-sm text-gray-600 mb-4">Tải xuống tất cả lời chúc và RSVP</p>
+                    <button onclick="exportData()" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">download</span>
+                        Tải xuống Excel
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Xóa dữ liệu</h3>
+                    <p class="text-sm text-gray-600 mb-4">⚠️ Cẩn thận! Hành động này không thể hoàn tác</p>
+                    <button onclick="clearAllData()" class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600">
+                        Xóa tất cả
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="admin.js"></script>
+
+</body>
+</html>
