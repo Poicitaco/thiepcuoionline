@@ -42,7 +42,7 @@ function loadDashboard() {
 }
 
 function loadStats() {
-    const wishes = JSON.parse(localStorage.getItem('wishes') || '[]');
+    const wishes = JSON.parse(localStorage.getItem('wedding_wishes') || '[]');
     const rsvpList = JSON.parse(localStorage.getItem('rsvpList') || '[]');
     const hearts = parseInt(localStorage.getItem('heartCount') || '0');
     
@@ -64,7 +64,7 @@ function loadStats() {
 // WISHES MANAGEMENT
 // ============================================
 function loadWishes() {
-    const wishes = JSON.parse(localStorage.getItem('wishes') || '[]');
+    const wishes = JSON.parse(localStorage.getItem('wedding_wishes') || '[]');
     const wishesContainer = document.getElementById('wishes-list');
     
     if (wishes.length === 0) {
@@ -102,9 +102,9 @@ function loadWishes() {
 
 function deleteWish(index) {
     if (confirm('Xóa lời chúc này?')) {
-        const wishes = JSON.parse(localStorage.getItem('wishes') || '[]');
+        const wishes = JSON.parse(localStorage.getItem('wedding_wishes') || '[]');
         wishes.splice(wishes.length - 1 - index, 1);
-        localStorage.setItem('wishes', JSON.stringify(wishes));
+        localStorage.setItem('wedding_wishes', JSON.stringify(wishes));
         loadDashboard();
     }
 }
@@ -191,7 +191,7 @@ document.getElementById('change-password-form')?.addEventListener('submit', (e) 
 // EXPORT DATA
 // ============================================
 function exportData() {
-    const wishes = JSON.parse(localStorage.getItem('wishes') || '[]');
+    const wishes = JSON.parse(localStorage.getItem('wedding_wishes') || '[]');
     const rsvpList = JSON.parse(localStorage.getItem('rsvpList') || '[]');
     
     let csv = 'DANH SÁCH LỜI CHÚC\n\n';
@@ -219,7 +219,7 @@ function exportData() {
 function clearAllData() {
     if (confirm('⚠️ BẠN CHẮC CHẮN MUỐN XÓA TẤT CẢ DỮ LIỆU?\n\nHành động này không thể hoàn tác!')) {
         if (confirm('Xác nhận lần cuối! Xóa tất cả?')) {
-            localStorage.removeItem('wishes');
+            localStorage.removeItem('wedding_wishes');
             localStorage.removeItem('rsvpList');
             localStorage.setItem('heartCount', '0');
             alert('Đã xóa tất cả dữ liệu!');
